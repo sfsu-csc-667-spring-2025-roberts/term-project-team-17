@@ -35,5 +35,8 @@
     "hooks": {
       "pre-commit": "npm run lint"
     }
+  },
+  "lint-staged": {
+    "*.ts": "npm run prettier"
   }
 }
