@@ -4,6 +4,19 @@
     <title><%= title %></title>
   </head>
   <body>
-    <p>Hello <%= name %></p>
+    <h1>Welcome to the Game Lobby</h1>
+
+    <!-- Lobby creation button -->
+    <button id="createLobbyButton">Create Lobby</button>
+
+    <!-- Join Lobby -->
+    <label for="lobbyId">Enter Lobby ID:</label>
+    <input type="text" id="lobbyId" placeholder="Enter 6-digit ID">
+    <button id="joinLobbyButton">Join Lobby</button>
+
+    <a href="/signup">Create an Account</a>
+
+    <!-- Only include the bundled client-side JS -->
+    <script src="/js/bundle.js"></script> <!-- Webpack bundle for client-side logic -->
   </body>
 </html>

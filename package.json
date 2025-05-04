@@ -4,6 +4,8 @@
   "description": "[![Open in Codespaces](https://classroom.github.com/assets/launch-codespace-2972f46106e565e64193e422d61a12cf1da4916b45550586e14ef0a7c637dd04.svg)](https://classroom.github.com/open-in-codespaces?assignment_repo_id=18625710)",
   "main": "index.js",
   "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "start": "webpack serve --config webpack.config.js --mode development",
     "start:dev": "nodemon --exec ts-node src/server/index.ts",
     "prepare": "husky",
     "prettier": "prettier --write ./src/**/*.ts"
@@ -13,23 +15,36 @@
   "devDependencies": {
     "@types/cookie-parser": "^1.4.8",
     "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.13.10",
+    "@types/pg": "^8.11.14",
+    "@types/socket.io": "^3.0.2",
+    "@types/socket.io-client": "^3.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.4.3",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.9",
     "prettier": "^3.5.3",
+    "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.3",
+    "webpack": "^5.99.7",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.1"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "express": "^5.0.1",
     "http-errors": "^2.0.0",
-    "pug": "^3.0.3"
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.15.6",
+    "pug": "^3.0.3",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
   },
   "husky": {
     "hooks": {
