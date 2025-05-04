@@ -1,12 +1,14 @@
-import express, { response } from "express";
+import express, { Request, Response } from "express";
 import { randomInt } from "crypto";
+import { attachUserFromToken } from "../middleware/authMiddleware";
 
 const router = express.Router();
+router.use(attachUserFromToken);
 
 // Route to render the home page with options to create or join a lobby
-router.get("/", (req, res) => {
+router.get("/", (req: Request, res: Response) => {
   const title = "Home"; // Home page title
-  const name = "Avinh"; // Could be dynamic, or just static
+  const name = req.username || "Guest"; // Could be dynamic, or just static
   res.render("root", { title, name }); // Renders the root.ejs (landing page)
 });
 
@@ -24,6 +26,10 @@ router.get("/lobby/:lobbyId", (req, res) => {
 
 router.get("/signup", (req, res) => {
   res.render("signup"); // Render the signup page
+});
+
+router.get("/signin", (req, res) => {
+  res.render("signin"); // Render the signin page
 });
 
 export default router;

@@ -5,8 +5,6 @@ import http from "http";
 import path from "path";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 
 // Socket
 import { Server } from "socket.io";
@@ -21,7 +19,6 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 const PORT = process.env.PORT || 3000;
-const JWT_SECRET = process.env.JWT_SECRET || "shmeme-secret-key-1000";
 
 // Middleware
 app.use(morgan("dev"));
