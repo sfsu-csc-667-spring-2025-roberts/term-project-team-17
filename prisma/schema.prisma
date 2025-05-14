@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Generator for Prisma Client
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+// Data source configuration
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model
+model User {
+  id        Int       @id @default(autoincrement())
+  username  String
+  email     String
+  password  String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+
+  lobbies   UserLobby[]
+  current_turn_lobby Lobby? @relation("CurrentTurnUser")
+  chatMessages ChatMessage[]
+  CardInstance CardInstance[] @relation("CardHolder")
+}
+
+// Lobby model
+model Lobby {
+  id                  Int       @id @default(autoincrement())
+  lobby_code          String    @unique
+  status              String    // 'waiting', 'in_game', 'finished'
+  current_turn_user   User?     @relation("CurrentTurnUser", fields: [current_turn_user_id], references: [id])
+  current_turn_user_id Int?     @unique
+  turn_direction      String    // 'clockwise' or 'counter-clockwise'
+  created_at          DateTime  @default(now())
+
+  users               UserLobby[]
+  chatMessages ChatMessage[]
+  cardInstances CardInstance[]
+}
+
+// UserLobby join table
+model UserLobby {
+  user      User      @relation(fields: [user_id], references: [id])
+  user_id   Int
+  lobby     Lobby     @relation(fields: [lobby_id], references: [id])
+  lobby_id  Int
+  joined_at DateTime  @default(now())
+  is_host   Boolean
+  turn_order Int
+
+  @@id([user_id, lobby_id])
+}
+
+// ChatMessage model
+model ChatMessage {
+  id         Int       @id @default(autoincrement())
+  user       User      @relation(fields: [user_id], references: [id])
+  user_id    Int
+  lobby      Lobby     @relation(fields: [lobby_id], references: [id])
+  lobby_id   Int
+  message    String
+  timestamp  DateTime  @default(now())
+}
+
+// CardTemplate model
+model CardTemplate {
+  id         Int       @id @default(autoincrement())
+  color      String
+  value      String
+  cardInstances CardInstance[]
+}
+
+// CardInstance model
+model CardInstance {
+  id               Int            @id @default(autoincrement())
+  card_template    CardTemplate   @relation(fields: [card_template_id], references: [id])
+  card_template_id Int
+  lobby            Lobby          @relation(fields: [lobby_id], references: [id])
+  lobby_id         Int
+  holder_user      User?          @relation("CardHolder", fields: [holder_user_id], references: [id])
+  holder_user_id   Int?
+
+  location_type    String
+  position         Int
+}
