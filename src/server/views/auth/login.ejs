@@ -1,27 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="css/auth.css">
-</head>
-<body>
-    <div class="auth-container">
-        <h1 class="auth-title">Login</h1>
-        <form class="auth-form" action="/login" method="POST">
-            <div class="form-group">
-                <label for="usernameOrEmail" class="form-label">Username or Email:</label>
-                <input type="text" id="usernameOrEmail" name="usernameOrEmail" class="form-input" required>
-            </div>
-            <div class="form-group">
-                <label for="password" class="form-label">Password:</label>
-                <input type="password" id="password" name="password" class="form-input" required>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="form-button">Login</button>
-            </div>
-        </form>
-    </div>
-</body>
+<%- include('../partials/header'); -%>
+
+<form action="/signup">
+    <h2>Login</h2>
+    <label for="usernameOrEmail">Username or Email</label>
+    <input type="text" name="usernameOrEmail" required />
+    <div class="usernameOrEmail error"></div>
+    <label for="password">Password</label>
+    <input type="password" name="password" required />
+    <div class="password error"></div>
+    <button>login</button>
+</form>
+
+<%- include('../partials/footer'); -%>
+
+<script>
+    const form = document.querySelector('form');
+    const usernameOrEmailError = document.querySelector('.usernameOrEmail.error');
+    const passwordError = document.querySelector('.password.error');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        usernameOrEmailError.textContent = '';
+        passwordError.textContent = '';
+
+        const usernameOrEmail = form.usernameOrEmail.value;
+        const password = form.password.value;
+
+        try {
+            const res = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ usernameOrEmail, password })
+            });
+            const data = await res.json();
+
+            if (data.errors) {
+                usernameOrEmailError.textContent = data.errors.usernameOrEmail || '';
+                passwordError.textContent = data.errors.password || '';
+            } else if (res.ok) {
+                alert('Login successful!');
+                window.location.href = '/';
+            }
+        } catch (error) {
+            console.error('Error during signup:', error);
+        }
+    })
+
+</script>
+
 </html>
