@@ -50,12 +50,13 @@
                 emailError.textContent = data.errors.email || '';
                 passwordError.textContent = data.errors.password || '';
             } else if (res.ok) {
-                alert('Signup successful!');
                 window.location.href = '/';
+            } else {
+                passwordError.textContent = 'The server may be down. Please try again.';
             }
         } catch (error) {
-            console.error('Error during signup:', error);
-            alert('Signup failed. Please try again.');
+            passwordError.textContent = 'The server may be down. Please try again.';
+            console.error('Error:', error);
         }
     })
 </script>

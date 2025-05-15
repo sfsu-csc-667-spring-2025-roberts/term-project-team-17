@@ -1,20 +1,36 @@
 const jwt = require("jsonwebtoken");
+const prisma = require("../db/prismaClient");
 
-function authMiddleware(req, res, next) {
-    const token = req.headers["authorization"];
+const requireAuth = (req, res, next) => {
+    const token = req.cookies.jwt;
 
-    if (!token) {
-        return res.status(403).send({ message: "No token provided!" });
-    }
+    if (!token) return res.redirect("/login");
 
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-        if (err) {
-            return res.status(401).send({ message: "Unauthorized!" });
-        }
-
-        req.userId = decoded.id;
-        next();
+        if (err) return res.redirect("/login");
+        return next();
     });
 }
 
-module.exports = authMiddleware;
+const checkUser = (req, res, next) => {
+    const token = req.cookies.jwt;
+
+    if (!token) {
+        res.locals.user = null;
+        return next();
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
+        if (err) {
+            res.locals.user = null;
+            return next();
+        }
+
+        let user = await prisma.user.findUnique({ where: { id: decodedToken.id } });
+        res.locals.user = user ? user : null;
+        console.log("User: ", res.locals.user);
+        return next();
+    });
+}
+
+module.exports = { requireAuth, checkUser };

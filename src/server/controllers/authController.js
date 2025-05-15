@@ -59,7 +59,7 @@ const signup_post = async (req, res) => {
         });
 
         const token = createToken(user.id);
-        res.cookie("token", token, {
+        res.cookie("jwt", token, {
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000
         });
@@ -93,7 +93,7 @@ const login_post = async (req, res) => {
         if (!passwordIsValid) return res.status(401).send({ errors: { password: "Invalid password" }});
 
         const token = createToken(user.id)
-        res.cookie("token", token, {
+        res.cookie("jwt", token, {
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000
         })
@@ -102,7 +102,11 @@ const login_post = async (req, res) => {
         console.log(err.message)
         res.sendStatus(503)
     }
+}
 
+const logout_get = (req, res) => {
+    res.cookie("jwt", '', { maxAge: 1 });
+    res.redirect("/");
 }
 
 module.exports = {
@@ -110,4 +114,5 @@ module.exports = {
     signup_post,
     login_get,
     login_post,
+    logout_get
 };
