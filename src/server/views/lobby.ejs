@@ -1,12 +1,100 @@
 <%- include('partials/header'); -%>
 
-<header>
+<!-- <header>
   <div class="headings">
     <h2>Lobby</h2>
     <h3>This is protected</h3>
-    <a href="/" class="btn">Landing Page</a>
+    <a href="/" class="btn">Create</a>
   </div>
-</header>
+</header> -->
 
+<div class="recipes">
+  <form id="createRoom" action="/room">
+    <h2>Create Room</h2>
+    <label for="createRoomCode">Room Code</label>
+    <input type="text" name="createRoomCode" required />
+    <div class="createRoomCode error"></div>
+    <button>Submit</button>
+  </form>
+  
+  <form id="joinRoom" action="/signup">
+    <h2>Join Room</h2>
+    <label for="joinRoomCode">Room Code</label>
+    <input type="text" name="joinRoomCode" required />
+    <div class="joinRoomCode error"></div>
+    <button>Submit</button>
+  </form>
+</div>
 
 <%- include('partials/footer'); -%>
+
+<script>
+    const createRoomForm = document.getElementById('createRoom');
+    const createRoomError = document.querySelector('.createRoomCode.error');
+    
+    createRoomForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        createRoomError.textContent = '';
+
+        const createRoomCode = createRoomForm.createRoomCode.value;
+
+        try {
+            const res = await fetch('/room', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ createRoomCode })
+            });
+            const data = await res.json();
+
+            console.log(data);
+
+            if (data.errors) {
+                createRoomError.textContent = data.errors.createRoomCode || '';
+            } else if (res.ok) {
+                window.location.href = '/room/' + data.gameId;
+            } else {
+                createRoomError.textContent = 'The server may be down. Please try again.';
+            }
+        } catch (error) {
+            console.error('Error during signup:', error);
+            createRoomError.textContent = 'The server may be down. Please try again.';
+        }
+    })
+
+    const joinRoomForm = document.getElementById('joinRoom');
+    const joinRoomError = document.querySelector('.joinRoomCode.error');
+
+    joinRoomForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        joinRoomError.textContent = '';
+
+        const joinRoomCode = joinRoomForm.joinRoomCode.value;
+
+        try {
+            const res = await fetch('/room', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ joinRoomCode })
+            });
+            const data = await res.json();
+
+            if (data.errors) {
+                joinRoomError.textContent = data.errors.joinRoomCode || '';
+            } else if (res.ok) {
+                window.location.href = '/room/' + data.gameId;
+            } else {
+                joinRoomError.textContent = 'The server may be down. Please try again.';
+            }
+        } catch (error) {
+            console.error('Error during signup:', error);
+            joinRoomError.textContent = 'The server may be down. Please try again.';
+        }
+    })
+
+</script>

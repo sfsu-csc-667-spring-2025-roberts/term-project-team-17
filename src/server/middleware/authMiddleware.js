@@ -27,10 +27,23 @@ const checkUser = (req, res, next) => {
         }
 
         let user = await prisma.user.findUnique({ where: { id: decodedToken.id } });
+        
         res.locals.user = user ? user : null;
-        console.log("User: ", res.locals.user);
+        res.locals.user.jwt = token;
+
         return next();
     });
 }
 
-module.exports = { requireAuth, checkUser };
+const getUserId = (req) => {
+    const token = req.cookies.jwt;
+
+    if (!token) return null;
+
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    if (!decodedToken) return null;
+
+    return decodedToken.id;
+}
+
+module.exports = { requireAuth, checkUser, getUserId };

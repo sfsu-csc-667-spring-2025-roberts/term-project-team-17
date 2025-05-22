@@ -32,10 +32,10 @@ model User {
 model Lobby {
   id                  Int       @id @default(autoincrement())
   lobby_code          String    @unique
-  status              String    // 'waiting', 'in_game', 'finished'
+  status              String    @default("waiting")// 'waiting', 'in_game', 'finished'
   current_turn_user   User?     @relation("CurrentTurnUser", fields: [current_turn_user_id], references: [id])
   current_turn_user_id Int?     @unique
-  turn_direction      String    // 'clockwise' or 'counter-clockwise'
+  turn_direction      String    @default("clockwise") // 'clockwise' or 'counter-clockwise'
   created_at          DateTime  @default(now())
 
   users               UserLobby[]
@@ -49,9 +49,10 @@ model UserLobby {
   user_id   Int
   lobby     Lobby     @relation(fields: [lobby_id], references: [id])
   lobby_id  Int
+  socket_id String?   @unique
   joined_at DateTime  @default(now())
-  is_host   Boolean
-  turn_order Int
+  is_host   Boolean   @default(false)
+  turn_order Int      @default(0)
 
   @@id([user_id, lobby_id])
 }

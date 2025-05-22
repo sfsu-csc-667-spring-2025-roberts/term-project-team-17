@@ -138,3 +138,56 @@ footer{
   margin-top: 120px;
   color: #aaa;
 }
+
+.container {
+
+  width: 360px;
+  /* margin: 0 auto; */
+  padding: 30px;
+  box-shadow: 1px 2px 3px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  background: white;
+}
+
+.horizontal-wrapper {
+  display: flex;
+  flex-direction: row;
+  margin: 0 auto;
+  gap: 2px;
+  /* background: #ff0099; */
+}
+
+.vertical-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  gap: 24px;
+  background-color: green;
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  gap: 24px;
+  overflow: auto;
+  height: 80%;
+}
+
+.messages p {
+  background: #f0f0f0;
+  padding: 10px;
+  border-radius: 8px;
+  margin: 0;
+}
+
+.messages-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.messages-buttons button {
+  margin-top: 0;
+}

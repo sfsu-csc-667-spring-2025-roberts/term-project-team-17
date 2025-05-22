@@ -1,0 +1,60 @@
+<%- include('../partials/header'); -%>
+
+<div class="horizontal-wrapper">
+    <div>
+        <h2>Room Code: <strong><%= roomCode %></strong></h2>
+        <br>
+        <h3>Game Status: waiting...</h3>
+        <br>
+        <h3>Players</h3>
+        <div id="players"></diV>
+        <br>
+        <div class="horizontal-wrapper">
+            <button class="btn" id="startGame">Start Game</button>
+            <button class="btn" id="leaveRoom">Leave Room</button>
+        </div>
+    </div>
+
+    <form>
+        <div class="messages" id="messages">
+            <p>data</p>
+            <p>data</p>
+            <p>data</p>
+            <p>data</p>
+        </div>
+        <div class="input-group">
+            <input type="text" id="message" placeholder="Type your message here..." required>
+            <div class="messages-buttons">
+                <h3><%= user.username %></h3>
+                <button type="submit" id="sendMessage">Send</button>
+            </div>
+        </div>
+    </form>
+</div>
+        
+
+<%- include('../partials/footer'); -%>
+
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
+<script>
+    const socket = io('http://localhost:3000');
+    
+    socket.on('connect', () => console.log('Connected to server with ID:', socket.id));
+    socket.on('disconnect', () => console.log('Disconnected from server'));
+    socket.on('error', (error) => console.error('Socket error:', error));
+
+    socket.emit('joinRoom', '<%= roomCode %>', '<%= user.jwt %>');
+
+    socket.on('players', (players) => {
+        console.log('Players in room:', players);
+        const playersDiv = document.getElementById('players');
+        playersDiv.innerHTML = '';
+        players.forEach((player) => {
+            const playerDiv = document.createElement('div');
+            playerDiv.className = 'container';
+            playerDiv.textContent = player.username;
+            playersDiv.appendChild(playerDiv);
+        });
+    });
+
+</script>
