@@ -68,18 +68,18 @@ const create_cards = async () => {
     try {
         for (let i = 0; i < cards.length; i++) {
             const card = cards[i];
-            const existingCard = await prisma.card.findFirst({
+            const existingCard = await prisma.cardTemplate.findFirst({
                 where: {
                     color: card.color,
-                    value: card.value
+                    value: card.value.toString()
                 }
             });
 
             if (!existingCard) {
-                await prisma.card.create({
+                await prisma.cardTemplate.create({
                     data: {
                         color: card.color,
-                        value: card.value
+                        value: card.value.toString()
                     }
                 });
             }
@@ -89,7 +89,7 @@ const create_cards = async () => {
         return;
     }
 
-    console.log("----- Cards Created -----\n");
+    console.log("\n----- Cards Created -----\n");
 }
 
 const room_create = async (req, res) => {
@@ -172,11 +172,29 @@ const room_get = async (req, res) => {
     }
 }
 
+const game_get = async (req, res) => {
+    const roomCode = req.params.id;
+    
+    try {
+        const room = await prisma.lobby.findUnique({where: { lobby_code: roomCode }});
+
+        if (!room) return res.redirect("/404");
+        
+        const userLobby = await prisma.userLobby.findFirst({ where: { user_id: getUserId(req), lobby_id: room.id }});
+
+        if (!userLobby) return res.redirect("/lobby");
+
+        res.render("game/game", { roomCode: room.lobby_code });
+    } catch (error) {
+        console.error("Error fetching game:", error);
+        res.status(500).send("Error fetching game");
+    }
+}
+
 module.exports = {
     room_create,
     room_join,
     room_get,
-//     game_create,
-//     game_get
+    game_get,
     create_cards,
 }

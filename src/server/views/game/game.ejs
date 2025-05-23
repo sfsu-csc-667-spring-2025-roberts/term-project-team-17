@@ -1,12 +1,235 @@
-<%- include('partials/header'); -%>
+<%- include('../partials/header'); -%>
 
-<header>
-  <div class="headings">
-    <h2>404</h2>
-    <h3>Page not found</h3>
-    <a href="/" class="btn">Go to Lobby</a>
+<main class="game-wrapper">
+  <!-- Game board layout -->
+  <div class="game-board-layout">
+
+    <!-- Opponent 2 - Top -->
+    <div class="opponent opponent-top">
+      <h4>Opponent 2</h4>
+      <div class="card-container">
+        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
+        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
+        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
+        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
+      </div>
+      <p>4 Cards</p>
+    </div>
+
+    <!-- Opponent 1 - Left -->
+    <div class="opponent opponent-left">
+      <h4>Opponent 1</h4>
+      <div class="card-column">
+        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
+        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
+        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
+        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
+      </div>
+      <p>4 Cards</p>
+    </div>
+
+    <!-- Center board -->
+    <div class="center-board">
+      <h4>Top Card</h4>
+      <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
+    </div>
+
+    <!-- Opponent 3 - Right -->
+    <div class="opponent opponent-right">
+      <h4>Opponent 3</h4>
+      <div class="card-column">
+        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
+        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
+        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
+        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
+      </div>
+      <p>4 Cards</p>
+    </div>
+
+    <!-- Your Hand - Bottom -->
+    <div class="player-hand">
+    <h4>Your Hand</h4>
+      <div class="card-container hand-cards">
+        <img src="/cards/red_5.jpg" class="card-img player-card" alt="Red 5" />
+        <img src="/cards/blue_2.jpg" class="card-img player-card" alt="Blue 2" />
+        <img src="/cards/green_7.jpg" class="card-img player-card" alt="Green 7" />
+        <img src="/cards/yellow_skip.jpg" class="card-img player-card" alt="Yellow Skip" />
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <button class="btn play-button">Play Card</button>
+      <button class="btn draw-button">Draw Card</button>
+      <button class="btn uno-button">UNO!</button>
+    </div>
+
+    <!-- Chat Box -->
+    <div class="chat-box">
+      <h4>Chat</h4>
+      <div class="chat-messages">
+        <p><strong>Alice:</strong> Good luck!</p>
+        <p><strong>Bob:</strong> You're going down 🔥</p>
+      </div>
+      <input type="text" placeholder="Type a message..." />
+    </div>
+
   </div>
-</header>
+</main>
 
 
-<%- include('partials/footer'); -%>
+<%- include('../partials/footer'); -%>
+
+
+<style>
+/* Card and Player Styles */
+/* Stretch the game to full screen */
+
+.game-wrapper {
+  height: calc(100vh - 180px); /* leave room for navbar */
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-board-layout {
+  height: 100%;
+  width: 100%;
+  max-width: 1600px;
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr 1.5fr;
+  grid-template-rows: 1fr 3fr 1.5fr;
+  grid-template-areas:
+    "left top right chat"
+    "left center right chat"
+    "hand hand hand chat";
+  gap: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+
+/* Assign grid areas */
+.opponent-left { grid-area: left; display: flex; flex-direction: column; align-items: center; }
+.opponent-top { grid-area: top; display: flex; flex-direction: column; align-items: center; }
+.opponent-right { grid-area: right; display: flex; flex-direction: column; align-items: center; }
+.center-board { grid-area: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.player-hand { grid-area: hand; display: flex; flex-direction: column; align-items: center; justify-content: end; }
+.chat-box { grid-area: chat; display: flex; flex-direction: column; background: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding: 10px; }
+
+.card-img {
+  width: 70px;
+  height: 110px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  margin: 5px;
+}
+
+/* Player hand overlapping look */
+.card-container.hand-cards {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  transform: translateY(-20px);
+  margin-top: 10px;
+}
+
+.card-container.hand-cards .card {
+  margin-left: -40px;
+  z-index: 1;
+  position: relative;
+}
+
+.card-container.hand-cards .card:hover {
+  transform: scale(1.15) translateY(-10px);
+  z-index: 10;
+}
+
+/* Opponent columns */
+.card-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Chat box */
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100%; /* cap height */
+  padding: 10px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+/* ensures messages don’t push down the input */
+.chat-messages {
+  flex-grow: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 10px;
+  font-size: 0.9rem;
+  background: #fafafa;
+  border-radius: 5px;
+  border: 1px solid #eee;
+  margin-bottom: 10px;
+}
+
+/* optional: makes sure input doesn’t get hidden or cut */
+.chat-box input {
+  flex-shrink: 0;
+  padding: 10px;
+  font-size: 1em;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+/* Controls */
+.controls {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 1000;
+}
+
+.controls .btn {
+  background-color: #FEE996;
+  border-radius: 36px;
+  padding: 10px 20px;
+  font-weight: bold;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.controls .uno-button {
+  background-color: #ff3333;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .controls {
+    flex-direction: row;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    gap: 8px;
+  }
+
+  .controls .btn {
+    font-size: 0.75em;
+    padding: 8px 12px;
+  }
+}
+
+</style>

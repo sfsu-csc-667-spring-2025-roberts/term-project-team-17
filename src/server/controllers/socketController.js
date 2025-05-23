@@ -58,6 +58,19 @@ const socketController = (server) => {
             io.to(roomCode).emit("players", users);
         });
 
+        socket.on("leaveRoom", async (roomCode, jwt) => {
+            const req = { cookies: { jwt } };
+            const user_id = getUserId(req);
+
+            const lobby = await prisma.lobby.findUnique({ where: { lobby_code: roomCode } });
+            if (!lobby) return;
+
+            const userLobby = await prisma.userLobby.findFirst({ where: { user_id, lobby_id: lobby.id } });
+            if (!userLobby) return;
+
+            await prisma.userLobby.deleteMany({ where: { user_id, lobby_id: lobby.id } });
+            socket.leave(roomCode);
+        });
 
         // Send message
         socket.on("sendMessage", (message) => {
@@ -65,11 +78,11 @@ const socketController = (server) => {
             io.to(roomCode).emit("receiveMessage", message);
         });
 
-
         // Leave room
         socket.on("disconnect", () => {
             console.log("User disconnected");
             console.log("Socket ID:", socket.id);
+            prisma.userLobby.findMany().then(async (userLobbies) => console.log("User lobbies:", userLobbies));
             prisma.userLobby.findMany({ where: { socket_id: socket.id } }).then(async (userLobbies) => {
                 console.log("User lobbies:", userLobbies);
                 for (const userLobby of userLobbies) {
@@ -79,7 +92,7 @@ const socketController = (server) => {
                         prisma.lobby.delete({ where: { id: userLobby.lobby_id } });
                     }
 
-                    prisma.userLobby.delete({ where: { id: userLobby.id } });
+                    prisma.userLobby.delete({ where: { socket_id: socket.id, lobby_id: userLobby.id } });
                 }
             })
         });
@@ -93,14 +106,23 @@ const socketController = (server) => {
             }
 
             const userLobbies = await prisma.userLobby.findMany({ where: { lobby_id: lobby.id } });
-            users = []
             for (const userLobby of userLobbies) {
                 const user = await prisma.user.findUnique({ where: { id: userLobby.user_id } });
-                users.push({
-                    id: user.id,
-                    username: user.username,
-                    is_host: userLobby.is_host
-                });
+                
+                // Create card instances for each user
+                for (i = 0; i < 7; i++) {
+                    random_card = Math.floor(Math.random() * 60);
+
+                    await prisma.cardInstance.create({
+                        data: {
+                            holder_user_id: user.id,
+                            card_template_id: random_card,
+                            lobby_id: lobby.id,
+                            location_type: "user",
+                            position: i,
+                        }
+                    })
+                }
             }
 
             io.to(roomCode).emit("gameStarted", users);

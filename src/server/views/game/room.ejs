@@ -57,4 +57,24 @@
         });
     });
 
+    const leaveRoomButton = document.getElementById('leaveRoom');
+
+    leaveRoomButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        socket.emit('leaveRoom', '<%= roomCode %>', '<%= user.jwt %>');
+        window.location.href = '/lobby';
+    });
+
+    const startGameButton = document.getElementById('startGame');
+
+    startGameButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        socket.emit('startGame', '<%= roomCode %>');
+    });
+
+    socket.on('gameStarted', () => {
+        console.log('Game started');
+        window.location.href = '/game/<%= roomCode %>';
+    });
+
 </script>

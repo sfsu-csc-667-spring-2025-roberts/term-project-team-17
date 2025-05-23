@@ -7,7 +7,6 @@ const router = express.Router();
 router.post('/room', gameController.room_create);
 router.put('/room', gameController.room_join);
 router.get('/room/:id', gameController.room_get);
-// router.get('/game', gameController.game_get);
-// router.get('/game/:id', gameController.game_get_by_id);
+router.get('/game/:id', gameController.game_get);
 
 module.exports = router;

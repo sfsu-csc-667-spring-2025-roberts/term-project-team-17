@@ -6,10 +6,12 @@ const http = require('http');
 const socketio = require('socket.io');
 const { requireAuth, checkUser } = require('./middleware/authMiddleware');
 const socketController = require('./controllers/socketController');
+const { create_cards } = require('./controllers/gameController');
 
 const authRoutes = require('./routes/authRoutes');
 const protectedRoutes = require('./routes/protectedRoutes');
 const gameRoutes = require('./routes/gameRoutes');
+const { create } = require('domain');
 
 const app = express();
 const server = http.createServer(app);
@@ -21,6 +23,7 @@ app.use(morgan("dev"));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.static(path.join(process.cwd(), "public")));
+create_cards();
 
 // View Engine
 app.set("views", path.join(process.cwd(), "src", "server", "views"));
