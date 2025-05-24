@@ -205,7 +205,7 @@ const socketController = (server) => {
             }
         });
 
-        // 🃏 Play Card
+        // Play Card
         socket.on('playCard', async ({ roomCode, jwt, color, value }) => {
             const req = { cookies: { jwt } };
             const user_id = getUserId(req);
@@ -324,7 +324,7 @@ const socketController = (server) => {
             io.to(roomCode).emit('refreshGameState');
         });
 
-        // 🃏 Draw Card
+        // Draw Card
         socket.on('drawCard', async ({ roomCode, jwt }) => {
             const req = { cookies: { jwt } };
             const user_id = getUserId(req);
@@ -365,13 +365,7 @@ const socketController = (server) => {
             io.to(roomCode).emit('refreshGameState');
         });
 
-        // 📢 Call UNO
-        socket.on('unoCall', ({ roomCode }) => {
-            console.log(`${socket.data.username} called UNO!`);
-            // Add logic to mark the player
-        });
-
-        // 💬 Chat
+        // Chat
         socket.on('sendMessage', async ({ roomCode, jwt, text }) => {
             const req = { cookies: { jwt } };
             const user_id = getUserId(req);

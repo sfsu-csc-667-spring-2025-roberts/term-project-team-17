@@ -1,7 +1,6 @@
 <%- include('../partials/header'); -%>
 
 <main class="game-wrapper">
-  <!-- Game board layout -->
   <div class="game-board-layout">
 
     <!-- Opponent 2 - Top -->
@@ -75,7 +74,7 @@
 
 <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
 <script>
-  const socket = io('http://localhost:3000'); // or use relative path if proxied
+  const socket = io('http://localhost:3000');
 
   socket.on('connect', () => {
     console.log('✅ Connected with ID:', socket.id);
@@ -111,7 +110,7 @@
     console.log('Game state:', state);
 
     // Update My Hand
-    myHand.innerHTML = ''; // Clear existing cards
+    myHand.innerHTML = '';
     hand.forEach((card) => {
       const cardImg = document.createElement('img');
       cardImg.src = `/cards/${card.color}_${card.value}.jpg`;
@@ -121,7 +120,6 @@
 
       // Add the onclick event to emit the card play
       cardImg.onclick = () => {
-        // Emit the event to the server
         socket.emit('playCard', {
           roomCode: '<%= roomCode %>',
           jwt: '<%= user.jwt %>',
@@ -193,7 +191,6 @@
     console.log('Card drawn');
   };
 
-  // ⚠️ Handle errors like invalid moves
   socket.on('invalidMove', (message) => {
     alert(`Invalid move: ${message}`);
   });
@@ -212,7 +209,7 @@
     const msg = document.createElement('p');
     msg.innerHTML = `<strong>${sender}:</strong> ${text}`;
     chatMessages.appendChild(msg);
-    chatMessages.scrollTop = chatMessages.scrollHeight; // auto-scroll to bottom
+    chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 
   function sendMessage(text) {
@@ -231,7 +228,7 @@
   const chatInput = document.getElementById('chat-input');
 
   chatForm.addEventListener('submit', (e) => {
-    e.preventDefault(); // prevent page reload
+    e.preventDefault();
 
     const message = chatInput.value.trim();
     if (message === '') return;
@@ -242,16 +239,13 @@
       text: message,
     });
 
-    chatInput.value = ''; // Clear input field
+    chatInput.value = '';
   });
 </script>
 
 <style>
-/* Card and Player Styles */
-/* Stretch the game to full screen */
-
 .game-wrapper {
-  height: calc(100vh - 180px); /* leave room for navbar */
+  height: calc(100vh - 180px);
   overflow: hidden;
   display: flex;
   justify-content: center;
@@ -275,8 +269,6 @@
   overflow: hidden;
 }
 
-
-/* Assign grid areas */
 .opponent-left { grid-area: left; display: flex; flex-direction: column; align-items: center; }
 .opponent-top { grid-area: top; display: flex; flex-direction: column; align-items: center; }
 .opponent-right { grid-area: right; display: flex; flex-direction: column; align-items: center; }
@@ -292,7 +284,6 @@
   margin: 5px;
 }
 
-/* Player hand overlapping look */
 .card-container.hand-cards {
   display: flex;
   justify-content: center;
@@ -306,7 +297,7 @@
   position: relative;
   transition: transform 0.2s ease, z-index 0.2s ease;
   transform-origin: bottom center;
-  padding: 0 5px; /* simulates some spacing */
+  padding: 0 5px;
 }
 
 .card-container.hand-cards .card-img:hover {
@@ -365,7 +356,6 @@
   overflow: hidden;
 }
 
-/* ensures messages don’t push down the input */
 .chat-box {
   display: flex;
   flex-direction: column;

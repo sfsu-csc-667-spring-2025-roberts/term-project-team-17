@@ -75,7 +75,7 @@
         const msg = document.createElement('p');
         msg.innerHTML = `<strong>${sender}:</strong> ${text}`;
         chatMessages.appendChild(msg);
-        chatMessages.scrollTop = chatMessages.scrollHeight; // auto-scroll to bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
     socket.on('receiveMessage', ({ sender, text }) => {
@@ -86,7 +86,7 @@
     const chatInput = document.getElementById('chat-input');
 
     chatForm.addEventListener('submit', (e) => {
-        e.preventDefault(); // prevent page reload
+        e.preventDefault();
 
         const message = chatInput.value.trim();
         if (message === '') return;
@@ -97,7 +97,7 @@
             text: message,
         });
 
-        chatInput.value = ''; // Clear input field
+        chatInput.value = '';
     });
 </script>
 
@@ -117,7 +117,7 @@
 }
 
 .chat-messages {
-  height: 400px; /* FIXED height */
+  height: 400px;
   overflow-y: auto;
   padding: 10px;
   font-size: 0.9rem;
