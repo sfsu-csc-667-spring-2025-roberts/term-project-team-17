@@ -6,80 +6,245 @@
 
     <!-- Opponent 2 - Top -->
     <div class="opponent opponent-top">
-      <h4>Opponent 2</h4>
-      <div class="card-container">
-        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
-        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
-        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
-        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
+      <h4 id="top-username">Opponent 2</h4>
+      <div id="top-cards" class="card-container">
+        <img src="/cards/Back.jpg" class="card-img" alt="Card Back" />
+        <img src="/cards/Back.jpg" class="card-img" alt="Card Back" />
+        <img src="/cards/Back.jpg" class="card-img" alt="Card Back" />
+        <img src="/cards/Back.jpg" class="card-img" alt="Card Back" />
       </div>
-      <p>4 Cards</p>
+      <p id="top-count">4 Cards</p>
     </div>
 
     <!-- Opponent 1 - Left -->
     <div class="opponent opponent-left">
-      <h4>Opponent 1</h4>
-      <div class="card-column">
-        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
-        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
-        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
-        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
+      <h4 id="left-username">Opponent 1</h4>
+      <div id="left-cards" class="card-column">
+        <img src="/cards/Back.jpg" class="card-img" alt="Card Back" />
+        <img src="/cards/Back.jpg" class="card-img" alt="Card Back" />
+        <img src="/cards/Back.jpg" class="card-img" alt="Card Back" />
+        <img src="/cards/Back.jpg" class="card-img" alt="Card Back" />
       </div>
-      <p>4 Cards</p>
+      <p id="left-count">4 Cards</p>
     </div>
 
     <!-- Center board -->
     <div class="center-board">
       <h4>Top Card</h4>
-      <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
+      <div>
+        <img id="draw" src="/cards/Back.jpg" class="card-img" alt="Draw Pile" />
+        <img id="deck" src="/cards/Back.jpg" class="card-img" alt="Card Back" />
+      </div>
     </div>
 
     <!-- Opponent 3 - Right -->
     <div class="opponent opponent-right">
-      <h4>Opponent 3</h4>
-      <div class="card-column">
-        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
-        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
-        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
-        <img src="/cards/back.jpg" class="card-img" alt="Card Back" />
+      <h4 id="right-username">Opponent 3</h4>
+      <div id="right-cards" class="card-column">
+        <img src="/cards/Back.jpg" class="card-img" alt="Card Back" />
+        <img src="/cards/Back.jpg" class="card-img" alt="Card Back" />
+        <img src="/cards/Back.jpg" class="card-img" alt="Card Back" />
+        <img src="/cards/Back.jpg" class="card-img" alt="Card Back" />
       </div>
-      <p>4 Cards</p>
+      <p id="right-count">4 Cards</p>
     </div>
 
     <!-- Your Hand - Bottom -->
     <div class="player-hand">
     <h4>Your Hand</h4>
-      <div class="card-container hand-cards">
-        <img src="/cards/red_5.jpg" class="card-img player-card" alt="Red 5" />
-        <img src="/cards/blue_2.jpg" class="card-img player-card" alt="Blue 2" />
-        <img src="/cards/green_7.jpg" class="card-img player-card" alt="Green 7" />
-        <img src="/cards/yellow_skip.jpg" class="card-img player-card" alt="Yellow Skip" />
+      <div id="my-hand" class="card-container hand-cards">
+        <img src="/cards/Red_5.jpg" class="card-img player-card" alt="Red 5" />
+        <img src="/cards/Blue_2.jpg" class="card-img player-card" alt="Blue 2" />
+        <img src="/cards/Green_7.jpg" class="card-img player-card" alt="Green 7" />
+        <img src="/cards/Yellow_Skip.jpg" class="card-img player-card" alt="Yellow Skip" />
       </div>
-    </div>
-
-    <!-- Controls -->
-    <div class="controls">
-      <button class="btn play-button">Play Card</button>
-      <button class="btn draw-button">Draw Card</button>
-      <button class="btn uno-button">UNO!</button>
     </div>
 
     <!-- Chat Box -->
     <div class="chat-box">
       <h4>Chat</h4>
-      <div class="chat-messages">
-        <p><strong>Alice:</strong> Good luck!</p>
-        <p><strong>Bob:</strong> You're going down 🔥</p>
+      <div class="chat-messages" id="chat-messages">
       </div>
-      <input type="text" placeholder="Type a message..." />
+      <form id="chat-form" class="chat-form">
+        <input id="chat-input" type="text" placeholder="Type a message..." required />
+      </form>
     </div>
-
   </div>
 </main>
-
-
 <%- include('../partials/footer'); -%>
 
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
+<script>
+  const socket = io('http://localhost:3000'); // or use relative path if proxied
+
+  socket.on('connect', () => {
+    console.log('✅ Connected with ID:', socket.id);
+
+    socket.emit('joinGame', {
+      roomCode: '<%= roomCode %>',
+      jwt: '<%= user.jwt %>',
+    });
+  });
+
+  socket.on('refreshGameState', () => {
+    console.log('🔄 Refreshing game state...');
+    socket.emit('refreshGameState', {
+      roomCode: '<%= roomCode %>',
+      jwt: '<%= user.jwt %>',
+    });
+  });
+
+  const leftUsername = document.getElementById('left-username');
+  const leftCards = document.getElementById('left-cards');
+  const leftCount = document.getElementById('left-count');
+  const topUsername = document.getElementById('top-username');
+  const topCards = document.getElementById('top-cards');
+  const topCount = document.getElementById('top-count');
+  const rightUsername = document.getElementById('right-username');
+  const rightCards = document.getElementById('right-cards');
+  const rightCount = document.getElementById('right-count');
+  const myHand = document.getElementById('my-hand');
+  const deckImg = document.getElementById('deck');
+  
+  socket.on('gameState', (state) => {
+    const { hand, players, myTurnId, turn, deck } = state;
+    console.log('Game state:', state);
+
+    // Update My Hand
+    myHand.innerHTML = ''; // Clear existing cards
+    hand.forEach((card) => {
+      const cardImg = document.createElement('img');
+      cardImg.src = `/cards/${card.color}_${card.value}.jpg`;
+      console.log(cardImg.src);
+      cardImg.className = 'card-img player-card';
+      cardImg.alt = `${card.color} ${card.value}`;
+
+      // Add the onclick event to emit the card play
+      cardImg.onclick = () => {
+        // Emit the event to the server
+        socket.emit('playCard', {
+          roomCode: '<%= roomCode %>',
+          jwt: '<%= user.jwt %>',
+          color: card.color,
+          value: card.value,
+        });
+        console.log(`Card played: ${card.color} ${card.value}`);
+      };
+
+      myHand.appendChild(cardImg);
+    });
+
+    // Update Center Card
+    deckImg.src = `/cards/${deck.color}_${deck.value}.jpg`;
+    deckImg.alt = `${deck.color} ${deck.value}`;
+
+    // Update Opponents
+    const leftPlayer = players.find((p) => p.turn === myTurnId + 1 % 4);
+    const topPlayer = players.find((p) => p.turn === myTurnId + 2 % 4);
+    const rightPlayer = players.find((p) => p.turn === myTurnId + 3 % 4);
+
+    console.log('Left Player:', leftPlayer);
+    console.log('Top Player:', topPlayer);
+    console.log('Right Player:', rightPlayer);
+    
+    // Update Left Player
+    leftUsername.innerText = leftPlayer.username;
+    leftCount.innerText = `${leftPlayer.cards} Cards`;
+    leftCards.innerHTML = '';
+    for (let i = 0; i < leftPlayer.cards; i++) {
+      const cardImg = document.createElement('img');
+      cardImg.src = `/cards/Back.jpg`;
+      cardImg.className = 'card-img';
+      cardImg.alt="Card Back";
+      leftCards.appendChild(cardImg);
+    }
+    
+    // Update Top Player
+    topUsername.innerText = topPlayer.username;
+    topCount.innerText = `${topPlayer.cards} Cards`;
+    topCards.innerHTML = '';
+    for (let i = 0; i < topPlayer.cards; i++) {
+      const cardImg = document.createElement('img');
+      cardImg.src = `/cards/Back.jpg`;
+      cardImg.className = 'card-img';
+      cardImg.alt="Card Back";
+      topCards.appendChild(cardImg);
+    }
+
+    // Update Right Player
+    rightUsername.innerText = rightPlayer.username;
+    rightCount.innerText = `${rightPlayer.cards} Cards`;
+    rightCards.innerHTML = '';
+    for (let i = 0; i < rightPlayer.cards; i++) {
+      const cardImg = document.createElement('img');
+      cardImg.src = `/cards/Back.jpg`;
+      cardImg.className = 'card-img';
+      cardImg.alt="Card Back";
+      rightCards.appendChild(cardImg);
+    }
+  });
+
+  const drawPile = document.getElementById('draw');
+  drawPile.onclick = () => {
+    socket.emit('drawCard', {
+      roomCode: '<%= roomCode %>',
+      jwt: '<%= user.jwt %>',
+    });
+    console.log('Card drawn');
+  };
+
+  // ⚠️ Handle errors like invalid moves
+  socket.on('invalidMove', (message) => {
+    alert(`Invalid move: ${message}`);
+  });
+
+  socket.on('receiveMessage', ({ sender, text }) => {
+    appendChatMessage(sender, text);
+  });
+
+  socket.on('gameOver', ({ winner }) => {
+    alert(`🎉 ${winner} wins the game!`);
+    window.location.href = '/lobby';
+  });
+
+  function appendChatMessage(sender, text) {
+    const chatMessages = document.getElementById('chat-messages');
+    const msg = document.createElement('p');
+    msg.innerHTML = `<strong>${sender}:</strong> ${text}`;
+    chatMessages.appendChild(msg);
+    chatMessages.scrollTop = chatMessages.scrollHeight; // auto-scroll to bottom
+  }
+
+  function sendMessage(text) {
+    socket.emit('sendMessage', {
+      roomCode: '<%= roomCode %>',
+      jwt: '<%= user.jwt %>',
+      text,
+    });
+  }
+
+  socket.on('disconnect', () => {
+    console.log('❌ Disconnected from server');
+  });
+
+  const chatForm = document.getElementById('chat-form');
+  const chatInput = document.getElementById('chat-input');
+
+  chatForm.addEventListener('submit', (e) => {
+    e.preventDefault(); // prevent page reload
+
+    const message = chatInput.value.trim();
+    if (message === '') return;
+
+    socket.emit('sendMessage', {
+      roomCode: '<%= roomCode %>',
+      jwt: '<%= user.jwt %>',
+      text: message,
+    });
+
+    chatInput.value = ''; // Clear input field
+  });
+</script>
 
 <style>
 /* Card and Player Styles */
@@ -132,19 +297,52 @@
   display: flex;
   justify-content: center;
   gap: 0;
-  transform: translateY(-20px);
   margin-top: 10px;
 }
 
-.card-container.hand-cards .card {
-  margin-left: -40px;
+.card-container.hand-cards .card-img {
+  margin-left: -30px;
   z-index: 1;
   position: relative;
+  transition: transform 0.2s ease, z-index 0.2s ease;
+  transform-origin: bottom center;
+  padding: 0 5px; /* simulates some spacing */
 }
 
-.card-container.hand-cards .card:hover {
-  transform: scale(1.15) translateY(-10px);
+.card-container.hand-cards .card-img:hover {
+  transform: scale(1.3) translateY(-20px);
   z-index: 10;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Top opponent (horizontal overlap) */
+.opponent-top .card-container {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+}
+
+.opponent-top .card-container .card-img {
+  margin-left: -40px;
+}
+
+/* Left and right opponents (vertical overlap) */
+.opponent-left .card-column,
+.opponent-right .card-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.opponent-left .card-column .card-img,
+.opponent-right .card-column .card-img {
+  margin-top: -60px;
+}
+
+.opponent-left h4,
+.opponent-right h4 {
+  margin-bottom: 80px;
 }
 
 /* Opponent columns */
@@ -168,9 +366,22 @@
 }
 
 /* ensures messages don’t push down the input */
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100%;
+  width: 100%;
+  padding: 10px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
 .chat-messages {
   flex-grow: 1;
-  min-height: 0;
   overflow-y: auto;
   padding: 10px;
   font-size: 0.9rem;
@@ -180,56 +391,23 @@
   margin-bottom: 10px;
 }
 
-/* optional: makes sure input doesn’t get hidden or cut */
-.chat-box input {
-  flex-shrink: 0;
+.chat-form {
+  all: unset; /* Resets inherited global styles */
+  display: flex;
+  width: 100%;
+  padding: 0 10px 10px;
+  box-sizing: border-box;
+}
+
+.chat-form input {
+  all: unset;
+  width: 100%;
   padding: 10px;
   font-size: 1em;
   border: 1px solid #ddd;
   border-radius: 5px;
-}
-
-/* Controls */
-.controls {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  z-index: 1000;
-}
-
-.controls .btn {
-  background-color: #FEE996;
-  border-radius: 36px;
-  padding: 10px 20px;
-  font-weight: bold;
-  font-size: 0.9em;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
-
-.controls .uno-button {
-  background-color: #ff3333;
-  color: white;
-}
-
-@media (max-width: 768px) {
-  .controls {
-    flex-direction: row;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    gap: 8px;
-  }
-
-  .controls .btn {
-    font-size: 0.75em;
-    padding: 8px 12px;
-  }
+  box-sizing: border-box;
+  background: white;
 }
 
 </style>

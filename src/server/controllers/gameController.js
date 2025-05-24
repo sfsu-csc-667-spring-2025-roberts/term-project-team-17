@@ -11,7 +11,6 @@ const cards = [
     { color: "red", value: 7 },
     { color: "red", value: 8 },
     { color: "red", value: 9 },
-    { color: "red", value: 10 },
     { color: "red", value: "skip" },
     { color: "red", value: "reverse" },
     { color: "red", value: "draw2" },
@@ -26,7 +25,6 @@ const cards = [
     { color: "green", value: 7 },
     { color: "green", value: 8 },
     { color: "green", value: 9 },
-    { color: "green", value: 10 },
     { color: "green", value: "skip" },
     { color: "green", value: "reverse" },
     { color: "green", value: "draw2" },
@@ -41,7 +39,6 @@ const cards = [
     { color: "blue", value: 7 },
     { color: "blue", value: 8 },
     { color: "blue", value: 9 },
-    { color: "blue", value: 10 },
     { color: "blue", value: "skip" },
     { color: "blue", value: "reverse" },
     { color: "blue", value: "draw2" },
@@ -56,7 +53,6 @@ const cards = [
     { color: "yellow", value: 7 },
     { color: "yellow", value: 8 },
     { color: "yellow", value: 9 },
-    { color: "yellow", value: 10 },
     { color: "yellow", value: "skip" },
     { color: "yellow", value: "reverse" },
     { color: "yellow", value: "draw2" },
@@ -65,6 +61,7 @@ const cards = [
 ]
 
 const create_cards = async () => {
+    prisma.cardTemplate.deleteMany();
     try {
         for (let i = 0; i < cards.length; i++) {
             const card = cards[i];
